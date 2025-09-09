@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../api/api'; 
 
 const LoginForm = ({ setUser }) => {
     const [loginType, setLoginType] = useState(null); // 'admin' or 'fighter'
@@ -13,7 +13,7 @@ const LoginForm = ({ setUser }) => {
         if (loginType === 'fighter') {
             const fetchFighters = async () => {
                 try {
-                    const res = await axios.get('http://localhost:5000/api/fighters/list');
+                    const res = await api.get('/fighters/list');
                     setFighters(res.data);
                 } catch (err) {
                     setError('Failed to fetch fighter list.');
@@ -27,7 +27,7 @@ const LoginForm = ({ setUser }) => {
     const handleAdminLogin = async (e) => {
         e.preventDefault();
         try {
-            const res = await axios.post('http://localhost:5000/api/auth/login', { ...adminCredentials, role: 'admin' });
+            const res = await api.post('/auth/login', { ...adminCredentials, role: 'admin' });
             localStorage.setItem('token', res.data.token);
             setUser(res.data.user);
             window.location.href = '/admin';
@@ -40,7 +40,7 @@ const LoginForm = ({ setUser }) => {
     const handleFighterLogin = async (e) => {
         e.preventDefault();
         try {
-            const res = await axios.post('http://localhost:5000/api/auth/login', { email: selectedFighter.email, password: fighterCredentials.password, role: 'fighter' });
+            const res = await api.post('/auth/login', { email: selectedFighter.email, password: fighterCredentials.password, role: 'fighter' });
             localStorage.setItem('token', res.data.token);
             setUser(res.data.user);
             window.location.href = '/fighter';
